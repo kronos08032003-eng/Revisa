@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Revisão Completa — Linux, Git, Hospedagem Estática, HTTPS & DNS</title>
+  <style>
+    :root{--bg:#f7f7fb;--card:#ffffff;--muted:#6b7280;--accent:#4f46e5;--mono:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;line-height:1.5;background:var(--bg);color:#0f172a}
+    .container{max-width:1100px;margin:36px auto;padding:24px}
+    header{display:flex;justify-content:space-between;align-items:center;gap:16px}
+    header h1{margin:0;font-size:28px}
+    header p{margin:0;color:var(--muted)}
+    nav a{margin-left:12px;color:var(--accent);text-decoration:none;font-weight:600}
+    main{display:grid;grid-template-columns:300px 1fr;gap:20px;margin-top:24px}
+    aside{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 6px 20px rgba(15,23,42,0.06)}
+    article{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 6px 20px rgba(15,23,42,0.06);max-height:78vh;overflow:auto}
+    section{margin-bottom:20px}
+    h2{font-size:20px;margin:0 0 8px}
+    h3{margin:0 0 6px;font-size:16px}
+    pre{background:#f3f4f6;padding:12px;border-radius:8px;overflow:auto;font-family:var(--mono);font-size:13px}
+    code{background:#eef2ff;padding:2px 6px;border-radius:6px;font-family:var(--mono);font-size:13px}
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    th,td{padding:10px;border-bottom:1px solid #eef2ff;text-align:left}
+    th{background:#fbfbff}
+    ul{padding-left:18px}
+    .muted{color:var(--muted);font-size:13px}
+    .btn{display:inline-block;background:var(--accent);color:white;padding:8px 12px;border-radius:8px;text-decoration:none}
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+    @media(max-width:880px){main{grid-template-columns:1fr;}
+      aside{order:2}
+      article{order:1}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Revisão Completa — Linux, Git, Hospedagem Estática, HTTPS & DNS</h1>
+        <p>Guia prático com comandos, comparação de provedores e passo a passo para publicar um site estático</p>
+      </div>
+      <nav>
+        <a href="#linux">Linux</a>
+        <a href="#git">Git</a>
+        <a href="#hosting">Hospedagem</a>
+        <a href="#https-dns">HTTPS & DNS</a>
+      </nav>
+    </header>
+
+    <main>
+      <aside>
+        <h3>Navegação rápida</h3>
+        <ul>
+          <li><a href="#linux">Comandos Linux essenciais</a></li>
+          <li><a href="#git">Comandos Git essenciais</a></li>
+          <li><a href="#hosting">Comparação de plataformas</a></li>
+          <li><a href="#https-dns">HTTPS & DNS</a></li>
+          <li><a href="#workflow">Workflow prático</a></li>
+          <li><a href="#resources">Recursos</a></li>
+        </ul>
+      </aside>
+
+      <article>
+        <section id="linux">
+          <h2>1. Comandos Linux — Revisão e Guia Prático</h2>
+          <p class="muted">Resumo: comandos essenciais para navegação, gestão de arquivos, permissões, processos, rede e scripts.</p>
+
+          <h3>Navegação e listagem</h3>
+          <pre><code>$ pwd
+$ ls -la
+$ cd /caminho/para/pasta
+$ tree (se instalado)</code></pre>
+          <p class="muted">Dica: combine <code>ls -la</code> com <code>--color=auto</code> para destacar tipos de arquivo.</p>
+
+          <h3>Gerenciamento de arquivos</h3>
+          <pre><code>$ cp origem destino
+$ mv arquivo pasta/
+$ rm arquivo.txt
+$ rm -rf pasta/  # CUIDADO</code></pre>
+
+          <h3>Permissões e propriedade</h3>
+          <pre><code>$ ls -l
+$ chmod 644 arquivo.txt
+$ chmod +x script.sh
+$ chown usuario:grupo arquivo</code></pre>
+          <p class="muted">Use notação octal (ex: <code>755</code>) ou simbólica (<code>u+rwx</code>).</p>
+
+          <h3>Processos e monitoramento</h3>
+          <pre><code>$ ps aux | grep nome
+$ top
+$ htop (se instalado)
+$ kill PID
+$ kill -9 PID</code></pre>
+
+          <h3>Rede</h3>
+          <pre><code>$ ip addr show
+$ ss -tuln
+$ ping exemplo.com
+$ curl -I https://exemplo.com</code></pre>
+
+          <h3>Busca e manipulação de texto</h3>
+          <pre><code>$ grep -R "termo" ./
+$ find . -name "*.js"
+$ awk '{print $1}' arquivo.txt
+$ sed -n '1,10p' arquivo.txt</code></pre>
+          <p class="muted">Exemplo poderoso: <code>find . -name '*.log' | xargs grep -i erro</code></p>
+
+          <h3>Scripts básicos (bash)</h3>
+          <pre><code>#!/usr/bin/env bash
+set -euo pipefail
+for f in *.txt; do
+  echo "Processando $f"
+done</code></pre>
+          <p class="muted">Use <code>set -euo pipefail</code> para scripts mais seguros.</p>
+        </section>
+
+        <section id="git">
+          <h2>2. Git — Comandos essenciais e fluxos de trabalho</h2>
+          <p class="muted">Do controle local ao trabalho colaborativo: commits, branches, merges, rebase e resolução de conflitos.</p>
+
+          <h3>Configuração inicial</h3>
+          <pre><code>$ git config --global user.name "Seu Nome"
+$ git config --global user.email "seu@exemplo.com"
+$ git config --global core.editor "code --wait"</code></pre>
+
+          <h3>Fluxo básico</h3>
+          <pre><code>$ git init
+$ git add .
+$ git commit -m "Mensagem"
+$ git branch -M main
+$ git remote add origin git@github.com:usuario/repositorio.git
+$ git push -u origin main</code></pre>
+
+          <h3>Branches, merge e rebase</h3>
+          <pre><code>$ git checkout -b feature/minha-feature
+# trabalhar...
+$ git add . && git commit -m "feat: adicionar X"
+$ git checkout main
+$ git pull origin main
+$ git merge feature/minha-feature
+# ou
+$ git rebase main (na branch feature)</code></pre>
+          <p class="muted">Rebase reescreve histórico — use em branches locais antes de compartilhar.</p>
+
+          <h3>Resolução de conflitos</h3>
+          <pre><code># após um merge com conflito
+$ git status
+# editar arquivos conflitantes
+$ git add arquivo
+$ git commit</code></pre>
+
+          <h3>Histórico e revisão</h3>
+          <pre><code>$ git log --oneline --graph --decorate
+$ git show HEAD~2:README.md
+$ git diff origem..destino</code></pre>
+
+          <h3>Dicas avançadas</h3>
+          <ul>
+            <li>Use <code>git stash</code> para mudanças temporárias.</li>
+            <li><code>git cherry-pick</code> para aplicar commits específicos.</li>
+            <li>Configure hooks (pre-commit, pre-push) para qualidade automática.</li>
+          </ul>
+        </section>
+
+        <section id="hosting">
+          <h2>3. Comparação entre plataformas de hospedagem para páginas estáticas</h2>
+          <p class="muted">Critérios: integração com Git, HTTPS automático, CDN, funções edge, custo e limites.</p>
+
+          <table>
+            <thead>
+              <tr><th>Plataforma</th><th>Integração Git</th><th>HTTPS</th><th>CDN/Perf.</th><th>Funções</th><th>Custo (free)</th><th>Indicado para</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>GitHub Pages</td><td>Sim (push -> deploy)</td><td>Sim (Let's Encrypt)</td><td>Sim</td><td>Não</td><td>Grátis</td><td>Doc/portfólios</td></tr>
+              <tr><td>Netlify</td><td>CI/CD (GitHub/GitLab/Bitbucket)</td><td>Sim</td><td>CDN global</td><td>Functions/Edge</td><td>Generoso</td><td>JAMstack</td></tr>
+              <tr><td>Vercel</td><td>Profunda (Git)</td><td>Sim</td><td>CDN + Edge</td><td>Edge Functions</td><td>Grátis (p/ individuals)</td><td>Next.js/React</td></tr>
+              <tr><td>Cloudflare Pages</td><td>Git + CI</td><td>Sim</td><td>Cloudflare CDN</td><td>Workers/Functions</td><td>Grátis (altos limites)</td><td>Baixa latência global</td></tr>
+              <tr><td>AWS S3 + CloudFront</td><td>Sim (via CI)</td><td>Sim (ACM)</td><td>CloudFront</td><td>Lambda@Edge</td><td>Pago (variável)</td><td>Escala empresarial</td></tr>
+            </tbody>
+          </table>
+
+          <p class="muted"><strong>Resumo prático:</strong> Vercel, Netlify e Cloudflare Pages equilibram simplicidade, HTTPS e funções edge. GitHub Pages é simples para documentação; AWS é para controle e escala.</p>
+
+          <h3>Critérios para escolher</h3>
+          <ul>
+            <li>Precisa de funções serverless? Prefira Vercel/Netlify/Cloudflare.</li>
+            <li>Quer deploy direto do GitHub sem configuração? GitHub Pages.</li>
+            <li>Requisitos empresariais e conformidade? AWS + CI/CD corporativo.</li>
+          </ul>
+        </section>
+
+        <section id="https-dns">
+          <h2>4. Explorando HTTPS e DNS</h2>
+          <p class="muted">Como funcionam e como configurar: fluxo da conexão HTTPS, registros DNS e certificados TLS/SSL.</p>
+
+          <h3>Conceitos básicos de DNS</h3>
+          <ul>
+            <li><strong>A</strong>: aponta para IPv4.</li>
+            <li><strong>AAAA</strong>: aponta para IPv6.</li>
+            <li><strong>CNAME</strong>: alias para outro nome canônico.</li>
+            <li><strong>TXT</strong>: verificações (SPF, DKIM) e validação.</li>
+            <li><strong>NS</strong>: delega zona a nameservers.</li>
+          </ul>
+
+          <h3>Como funciona HTTPS (resumo)</h3>
+          <ol>
+            <li>Cliente inicia conexão TLS.</li>
+            <li>Servidor envia certificado X.509.</li>
+            <li>Cliente valida certificado (CA, nome, validade).</li>
+            <li>Negociação de parâmetros criptográficos.</li>
+            <li>Comunicação cifrada com chave de sessão.</li>
+          </ol>
+
+          <p class="muted">Let's Encrypt usa ACME para emitir certificados gratuitos. Plataformas (Netlify, Vercel, Cloudflare) cuidam da emissão e renovação automaticamente.</p>
+
+          <h3>Configuração típica — passo a passo</h3>
+          <pre><code># 1. Registrar domínio
+# 2. Criar registros DNS (A/AAAA para ips ou CNAME para o provedor)
+# 3. Adicionar domínio no painel do provedor de hospedagem
+# 4. Verificar domínio (TXT/CNAME) e ativar HTTPS
+# 5. Testar: curl -I https://seu-dominio.com</code></pre>
+
+          <h3>Problemas comuns</h3>
+          <ul>
+            <li>Certificado inválido: relógio incorreto ou CNAME mal configurado.</li>
+            <li>DNS não propagado: aguardar TTL ou usar <code>dig +trace</code>.</li>
+            <li>Mixed content: recursos HTTP em página HTTPS — atualizar URLs.</li>
+          </ul>
+        </section>
+
+        <section id="workflow">
+          <h2>5. Exemplo prático: workflow para publicar um site estático</h2>
+          <ol>
+            <li>Inicialize repositório Git e crie <code>index.html</code>.</li>
+            <li>Faça commits e publique no GitHub.</li>
+            <li>Conecte o repositório ao Vercel/Netlify/Cloudflare Pages.</li>
+            <li>Configure domínio no painel do provedor.</li>
+            <li>Ative HTTPS automático e teste o site.</li>
+          </ol>
+
+          <div style="background:#f8fafc;padding:10px;border-radius:8px;margin-top:8px">
+            <strong>Comandos de exemplo</strong>
+            <pre><code>$ git init
+$ echo "&lt;h1&gt;Olá mundo&lt;/h1&gt;" &gt; index.html
+$ git add .
+$ git commit -m "chore: site inicial"
+$ git remote add origin git@github.com:usuario/site.git
+$ git push -u origin main</code></pre>
+          </div>
+        </section>
+
+        <section id="resources">
+          <h2>6. Recursos rápidos e boas práticas</h2>
+          <ul>
+            <li>Use CI para testes e lint antes do deploy.</li>
+            <li>Adote branch protection e revisão por pull request.</li>
+            <li>Automatize renovação de certificados (provedores já fazem).</li>
+            <li>Monitore uptime (UptimeRobot, Pingdom) e performance.</li>
+            <li>Documente o processo no <code>README.md</code>.</li>
+          </ul>
+
+          <p class="muted">Deseja que eu gere um README.md pronto, um ZIP com os arquivos do site, ou já prepare um deploy automático (Vercel/Netlify)?</p>
+        </section>
+
+        <footer style="padding-top:12px;border-top:1px solid #eef2ff">Feito com carinho — revisão técnica e exemplos práticos.</footer>
+      </article>
+    </main>
+  </div>
+</body>
+</html>
